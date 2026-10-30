@@ -1,0 +1,248 @@
+{
+  "datasets": [
+    {
+      "name": "9dcc2f25",
+      "displayName": "fact_transactions_denorm",
+      "config": {
+        "version": "1.1",
+        "source": "ecommerce_bi.gold.fact_transactions_denorm",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "01fd2a6e",
+      "displayName": "Sales",
+      "layout": [
+        {
+          "widget": {
+            "name": "9a99ac1c",
+            "multilineTextboxSpec": {
+              "lines": [
+                "### Sales insights"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "cfaad8d0",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "9dcc2f25",
+                  "fields": [
+                    {
+                      "name": "monthly(transaction_date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `transaction_date`)"
+                    },
+                    {
+                      "name": "sum(gross_amount)",
+                      "expression": "SUM(`gross_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Monthly Sales Trend"
+              },
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(transaction_date)",
+                  "displayName": "Month",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(gross_amount)",
+                  "displayName": "Gross Amount",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "47ecc142",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "9dcc2f25",
+                  "fields": [
+                    {
+                      "name": "category_name",
+                      "expression": "`category_name`"
+                    },
+                    {
+                      "name": "sum(net_amount)",
+                      "expression": "SUM(`net_amount`)"
+                    }
+                  ],
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "DESC",
+                      "expression": "SUM(`net_amount`)"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Net Amount per Category"
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "category_name",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "measure-reversed",
+                      "measure": {
+                        "fieldName": "sum(net_amount)"
+                      }
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(net_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 1,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "b87da4a1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "9dcc2f25",
+                  "fields": [
+                    {
+                      "name": "sum(net_amount)",
+                      "expression": "SUM(`net_amount`)"
+                    },
+                    {
+                      "name": "hour_of_day",
+                      "expression": "`hour_of_day`"
+                    },
+                    {
+                      "name": "day_name",
+                      "expression": "`day_name`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "heatmap",
+              "encodings": {
+                "x": {
+                  "fieldName": "hour_of_day",
+                  "displayName": "Hour of the day",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "day_name",
+                  "displayName": "Day",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "sum(net_amount)",
+                  "displayName": "Net Amount",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 12,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
